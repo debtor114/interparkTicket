@@ -1475,6 +1475,196 @@ class TicketingApp {
         }
     }
 
+    async handleWaitingQueue() {
+        try {
+            // 대기열 감지 키워드
+            const queueKeywords = ['대기', 'waiting', 'queue', '잠시만', '대기열', '순번'];
+            
+            const pageText = await this.page.evaluate(() => document.body.textContent);
+            const hasQueue = queueKeywords.some(keyword => 
+                pageText.toLowerCase().includes(keyword.toLowerCase())
+            );
+
+            if (hasQueue) {
+                this.addLog('🚦 대기열 감지됨 - 우회 시도 중...', 'warning');
+                
+                // 방법 1: 새로고침 시도
+                await this.bypassQueueWithRefresh();
+                
+                // 방법 2: 다른 URL로 접근 시도
+                await this.bypassQueueWithAlternateUrl();
+                
+                // 방법 3: 캐시 무시하고 재로드
+                await this.bypassQueueWithHardRefresh();
+                
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error('대기열 처리 오류:', error);
+            return false;
+        }
+    }
+
+    async bypassQueueWithRefresh() {
+        try {
+            this.addLog('🔄 빠른 새로고침으로 대기열 우회 시도...', 'info');
+            
+            // 빠른 연속 새로고침 (3회)
+            for(let i = 0; i < 3; i++) {
+                await this.page.reload({ waitUntil: 'domcontentloaded' });
+                await this.sleep(500 + Math.random() * 500); // 0.5-1초 랜덤 대기
+                
+                const pageText = await this.page.evaluate(() => document.body.textContent);
+                if (!pageText.includes('대기') && !pageText.includes('waiting')) {
+                    this.addLog('✅ 새로고침으로 대기열 우회 성공!', 'success');
+                    return true;
+                }
+            }
+            
+            return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async bypassQueueWithAlternateUrl() {
+        try {
+            const currentUrl = await this.page.url();
+            
+            // URL 패턴 수정 시도
+            const alternateUrls = [
+                currentUrl.replace('www.', ''),           // www 제거
+                currentUrl.replace('http://', 'https://'), // https로 변경
+                currentUrl + '?direct=1',                  // direct 파라미터 추가
+                currentUrl + '&bypass=1',                  // bypass 파라미터 추가
+                currentUrl.replace('tickets.', 'ticket.') // 서브도메인 변경
+            ];
+            
+            for(const url of alternateUrls) {
+                try {
+                    this.addLog(`🔗 대체 URL 시도: ${url}`, 'info');
+                    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 5000 });
+                    
+                    const pageText = await this.page.evaluate(() => document.body.textContent);
+                    if (!pageText.includes('대기') && !pageText.includes('waiting')) {
+                        this.addLog('✅ 대체 URL로 대기열 우회 성공!', 'success');
+                        return true;
+                    }
+                } catch (e) {
+                    // 다음 URL 시도
+                }
+            }
+            
+            return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async bypassQueueWithHardRefresh() {
+        try {
+            this.addLog('💪 강력 새로고침으로 대기열 우회 시도...', 'info');
+            
+            // 캐시 무시하고 강력 새로고침
+            await this.page.reload({ 
+                waitUntil: 'networkidle2', 
+                timeout: 10000 
+            });
+            
+            await this.sleep(2000);
+            
+            const pageText = await this.page.evaluate(() => document.body.textContent);
+            if (!pageText.includes('대기') && !pageText.includes('waiting')) {
+                this.addLog('✅ 강력 새로고침으로 대기열 우회 성공!', 'success');
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async multiInstanceStrategy() {
+        try {
+            this.addLog('🚀 다중 인스턴스 전략 시작...', 'success');
+            
+            const browsers = [];
+            const maxInstances = 3;
+            
+            for(let i = 0; i < maxInstances; i++) {
+                const browser = await puppeteer.launch({
+                    headless: false,
+                    defaultViewport: null,
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage'
+                    ]
+                });
+                
+                browsers.push(browser);
+                
+                const page = await browser.newPage();
+                const currentUrl = await this.page.url();
+                
+                // 각 인스턴스마다 약간 다른 접근
+                const modifiedUrl = currentUrl + `?instance=${i}&t=${Date.now()}`;
+                
+                page.goto(modifiedUrl, { waitUntil: 'networkidle2' }).catch(() => {});
+                
+                this.addLog(`🔄 인스턴스 ${i+1} 시작됨`, 'info');
+                await this.sleep(1000); // 1초 간격으로 시작
+            }
+            
+            // 가장 빠르게 로드된 인스턴스 확인
+            setTimeout(() => {
+                browsers.forEach((browser, index) => {
+                    browser.pages().then(pages => {
+                        if(pages.length > 1) {
+                            const page = pages[1]; // 첫 번째는 about:blank
+                            page.evaluate(() => document.body.textContent).then(text => {
+                                if(!text.includes('대기') && !text.includes('waiting')) {
+                                    this.addLog(`✅ 인스턴스 ${index+1}에서 대기열 우회 성공!`, 'success');
+                                    // 성공한 인스턴스를 메인으로 전환
+                                    this.page = page;
+                                }
+                            });
+                        }
+                    });
+                });
+            }, 5000);
+            
+        } catch (error) {
+            console.error('다중 인스턴스 전략 오류:', error);
+        }
+    }
+
+    async preciseTimingAttack(targetTime) {
+        // 정확한 시간에 맞춰서 접속하는 기능
+        const now = new Date();
+        const target = new Date(targetTime);
+        const waitTime = target.getTime() - now.getTime();
+        
+        if(waitTime > 0) {
+            this.addLog(`⏰ ${Math.round(waitTime/1000)}초 후 정확한 타이밍 공격 시작`, 'info');
+            
+            setTimeout(async () => {
+                this.addLog('🎯 정확한 타이밍 공격 시작!', 'success');
+                
+                // 동시에 여러 방법으로 접근
+                await Promise.all([
+                    this.page.reload({ waitUntil: 'domcontentloaded' }),
+                    this.multiInstanceStrategy(),
+                    this.bypassQueueWithRefresh()
+                ]);
+                
+            }, waitTime - 100); // 100ms 일찍 시작해서 네트워크 지연 고려
+        }
+    }
+
     saveSettings() {
         const settings = {
             ticketCount: document.getElementById('ticketCount').value,
