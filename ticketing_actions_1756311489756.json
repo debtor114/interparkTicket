@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-08-27T16:18:09.755Z",
+  "totalActions": 3,
+  "actions": [
+    {
+      "type": "click",
+      "timestamp": 1756311438455,
+      "selector": "xpath:///h2[contains(text(), '투어 특가')]",
+      "text": "투어 특가",
+      "tagName": "H2",
+      "className": "",
+      "id": "",
+      "url": "https://nol.interpark.com/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1756311449818,
+      "selector": "xpath:///span[contains(text(), '예매하기')]",
+      "text": "예매하기",
+      "tagName": "SPAN",
+      "className": "",
+      "id": "",
+      "url": "https://tickets.interpark.com/goods/25012059"
+    },
+    {
+      "type": "click",
+      "timestamp": 1756311449818,
+      "selector": "xpath:///span[contains(text(), '예매하기')]",
+      "text": "예매하기",
+      "tagName": "SPAN",
+      "className": "",
+      "id": "",
+      "url": "https://tickets.interpark.com/goods/25012059"
+    }
+  ]
+}

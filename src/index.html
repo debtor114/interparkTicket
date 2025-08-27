@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>티케팅 자동화</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎫 티케팅 자동화 프로그램</h1>
+        </header>
+        
+        <main>
+            <div class="section">
+                <h2>1. 로그인</h2>
+                <div class="login-section">
+                    <button id="openBrowserBtn" class="btn primary">티케팅 사이트 열기</button>
+                    <button id="checkLoginBtn" class="btn primary" disabled>로그인 확인</button>
+                    <div id="loginStatus" class="status">로그인하지 않음</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>2. 콘서트 정보</h2>
+                <div class="concert-section">
+                    <label for="concertSelect">콘서트 선택:</label>
+                    <select id="concertSelect">
+                        <option value="">콘서트를 선택하세요</option>
+                        <option value="concert1">인터파크 티켓</option>
+                        <option value="concert2">멜론 티켓</option>
+                        <option value="concert3">YES24 티켓</option>
+                        <option value="custom">직접 입력</option>
+                    </select>
+                    
+                    <div id="customConcert" class="custom-input" style="display:none;">
+                        <input type="text" id="concertUrl" placeholder="티케팅 URL을 입력하세요">
+                        <input type="text" id="concertName" placeholder="콘서트 이름을 입력하세요">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>3. 티케팅 설정</h2>
+                <div class="settings-section">
+                    <div class="setting-item">
+                        <label for="ticketCount">매수:</label>
+                        <select id="ticketCount">
+                            <option value="1">1매</option>
+                            <option value="2">2매</option>
+                            <option value="3">3매</option>
+                            <option value="4">4매</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="seatGrade">좌석 등급:</label>
+                        <select id="seatGrade">
+                            <option value="any">상관없음</option>
+                            <option value="vip">VIP</option>
+                            <option value="r">R석</option>
+                            <option value="s">S석</option>
+                            <option value="a">A석</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="autoRefresh">자동 새로고침 간격:</label>
+                        <select id="autoRefresh">
+                            <option value="1000">1초</option>
+                            <option value="2000">2초</option>
+                            <option value="3000">3초</option>
+                            <option value="5000">5초</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>4. 실행</h2>
+                <div class="control-section">
+                    <button id="startBtn" class="btn success" disabled>티케팅 시작</button>
+                    <button id="stopBtn" class="btn danger" disabled>중지</button>
+                    <button id="recordBtn" class="btn primary" disabled>행동 기록</button>
+                    <button id="saveLogBtn" class="btn primary" disabled>로그 저장</button>
+                </div>
+                
+                <div class="status-section">
+                    <div id="statusLog" class="status-log">
+                        <div class="log-item">프로그램이 준비되었습니다.</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

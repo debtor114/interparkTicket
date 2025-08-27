@@ -1,0 +1,48 @@
+{
+  "name": "ticker-automation",
+  "version": "1.0.0",
+  "description": "티케팅 자동화 프로그램",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "pack": "electron-builder --dir",
+    "install-deps": "npm install"
+  },
+  "keywords": ["ticketing", "automation", "concert", "electron"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "com.ticker.automation",
+    "productName": "티케팅 자동화",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "Ticker Automation",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "티케팅 자동화"
+    }
+  }
+}
