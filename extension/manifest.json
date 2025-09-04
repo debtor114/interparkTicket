@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "티켓팅 모니터",
+  "version": "1.0",
+  "description": "티켓팅 네트워크 요청 모니터링 및 로그인 감지",
+  
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "webRequest",
+    "webNavigation"
+  ],
+  
+  "host_permissions": [
+    "https://*.interpark.com/*",
+    "https://tickets.interpark.com/*",
+    "https://tkglobal.interpark.com/*",
+    "https://poticket.interpark.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.interpark.com/*",
+        "https://ticket.interpark.com/*",
+        "https://tickets.interpark.com/*", 
+        "https://tkglobal.interpark.com/*",
+        "https://poticket.interpark.com/*",
+        "https://book.interpark.com/*",
+        "https://tour.interpark.com/*"
+      ],
+      "js": [
+        "modules/domUtils.js",
+        "modules/elementFinder.js", 
+        "modules/loginDetector.js",
+        "modules/siteDetector.js",
+        "modules/messageUtils.js",
+        "modules/eventRecorder.js",
+        "modules/exportUtils.js",
+        "content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "티켓팅 모니터"
+  }
+}

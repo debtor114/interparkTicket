@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            width: 320px;
+            min-height: 400px;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 14px;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .status-section {
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .status-value {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .status-value.online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-value.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-value.monitoring {
+            background: #cce5ff;
+            color: #0056b3;
+        }
+
+        .controls-section {
+            padding: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .stats-section {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .stats-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #495057;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .log-section {
+            padding: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .log-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #495057;
+        }
+
+        .log-item {
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            font-size: 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #dee2e6;
+        }
+
+        .log-item.important {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .log-time {
+            color: #6c757d;
+            font-size: 11px;
+        }
+
+        .connection-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .connection-indicator.connected {
+            background: #28a745;
+        }
+
+        .connection-indicator.disconnected {
+            background: #dc3545;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎫 티켓팅 모니터</h1>
+    </div>
+
+    <div class="status-section">
+        <div class="status-item">
+            <span class="status-label">분석 상태</span>
+            <span class="status-value" id="monitoring-status">준비</span>
+        </div>
+
+        <div class="status-item">
+            <span class="status-label">현재 사이트</span>
+            <span class="status-value" id="current-site">-</span>
+        </div>
+
+        <div class="status-item">
+            <span class="status-label">로그인 상태</span>
+            <span class="status-value" id="login-status">확인 중</span>
+        </div>
+    </div>
+
+    <div class="controls-section">
+        <button class="btn btn-primary" id="toggle-monitoring">분석 시작</button>
+        <button class="btn btn-secondary" id="view-analysis">분석 결과 보기</button>
+        <button class="btn btn-secondary" id="export-data">데이터 관리</button>
+    </div>
+
+    <div class="stats-section">
+        <div class="stats-title">통계</div>
+        <div class="stat-item">
+            <span class="stat-label">총 요청 수:</span>
+            <span class="stat-value" id="total-requests">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">중요 요청:</span>
+            <span class="stat-value" id="important-requests">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">마지막 활동:</span>
+            <span class="stat-value" id="last-activity">-</span>
+        </div>
+    </div>
+
+    <div class="log-section">
+        <div class="log-title">최근 활동</div>
+        <div id="activity-log">
+            <div class="log-item">
+                <div class="log-time">시작됨</div>
+                <div>티켓팅 모니터가 준비되었습니다.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -11,11 +11,21 @@
     "pack": "electron-builder --dir",
     "install-deps": "npm install"
   },
-  "keywords": ["ticketing", "automation", "concert", "electron"],
+  "keywords": [
+    "ticketing",
+    "automation",
+    "concert",
+    "electron"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.11.0",
+    "chrome-remote-interface": "^0.33.3",
     "puppeteer": "^21.0.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-adblocker": "^2.13.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
